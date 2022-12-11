@@ -15,9 +15,13 @@ from .rfp import RFP
 from .ssd_neck import SSDNeck
 from .yolo_neck import YOLOV3Neck
 from .yolox_pafpn import YOLOXPAFPN
+from .my_yolo_neck import my_YOLOV3Neck
+from .yolo_spp_neck import YOLOV3_SPP_Neck
+from .my_yolo_neck_DCT_DCS import my_YOLOV3Neck_DCT
 
 __all__ = [
     'FPN', 'BFP', 'ChannelMapper', 'HRFPN', 'NASFPN', 'FPN_CARAFE', 'PAFPN',
     'NASFCOS_FPN', 'RFP', 'YOLOV3Neck', 'FPG', 'DilatedEncoder',
-    'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'DyHead'
+    'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'DyHead', 'my_YOLOV3Neck', 'YOLOV3_SPP_Neck',
+    'my_YOLOV3Neck_DCT'
 ]

@@ -41,6 +41,8 @@ from .yolact_head import YOLACTHead, YOLACTProtonet, YOLACTSegmHead
 from .yolo_head import YOLOV3Head
 from .yolof_head import YOLOFHead
 from .yolox_head import YOLOXHead
+from .atss_yolo_head import ATSS_YOLOV3Head
+from .yolo_head_atss import YOLOV3_ATSS_Head
 
 __all__ = [
     'AnchorFreeHead', 'AnchorHead', 'GuidedAnchorHead', 'FeatureAdaption',
@@ -54,5 +56,5 @@ __all__ = [
     'DETRHead', 'YOLOFHead', 'DeformableDETRHead', 'SOLOHead',
     'DecoupledSOLOHead', 'CenterNetHead', 'YOLOXHead',
     'DecoupledSOLOLightHead', 'LADHead', 'TOODHead', 'MaskFormerHead',
-    'Mask2FormerHead', 'SOLOV2Head', 'DDODHead'
+    'Mask2FormerHead', 'SOLOV2Head', 'DDODHead', 'ATSS_YOLOV3Head', 'YOLOV3_ATSS_Head'
 ]

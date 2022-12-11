@@ -28,6 +28,7 @@ class BaseDenseHead(BaseModule, metaclass=ABCMeta):
         """Compute losses of the head."""
         pass
 
+
     @force_fp32(apply_to=('cls_scores', 'bbox_preds'))
     def get_bboxes(self,
                    cls_scores,

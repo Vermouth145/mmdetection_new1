@@ -14,7 +14,7 @@ model = dict(
         out_channels=[512, 256, 128]),
     bbox_head=dict(
         type='YOLOV3Head',
-        num_classes=80,
+        num_classes=20,
         in_channels=[512, 256, 128],
         out_channels=[1024, 512, 256],
         anchor_generator=dict(
@@ -57,7 +57,7 @@ model = dict(
         max_per_img=100))
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+data_root = 'data/VOCdevkit/'
 img_norm_cfg = dict(mean=[0, 0, 0], std=[255., 255., 255.], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile', to_float32=True),
@@ -99,21 +99,21 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_train2017.json',
-        img_prefix=data_root + 'train2017/',
+        ann_file=data_root + 'Annotations/voc0712_trainval.json',
+        img_prefix=data_root + 'JPEGImages/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'Annotations/voc0712_val.json',
+        img_prefix=data_root + 'JPEGImages/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'Annotations/voc07_test.json',
+        img_prefix=data_root + 'JPEGImages/',
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0005)
+optimizer = dict(type='SGD', lr=0.0001, momentum=0.9, weight_decay=0.0005)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
 lr_config = dict(
@@ -123,7 +123,7 @@ lr_config = dict(
     warmup_ratio=0.1,
     step=[218, 246])
 # runtime settings
-runner = dict(type='EpochBasedRunner', max_epochs=273)
+runner = dict(type='EpochBasedRunner', max_epochs=200)
 evaluation = dict(interval=1, metric=['bbox'])
 
 # NOTE: `auto_scale_lr` is for automatically scaling LR,

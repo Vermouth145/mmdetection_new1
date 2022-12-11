@@ -3,8 +3,10 @@
 
 import torch
 import torch.nn.functional as F
+import numpy as np
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule
+from ..attentions import CBAM
 
 from ..builder import NECKS
 
@@ -117,24 +119,59 @@ class YOLOV3Neck(BaseModule):
             self.add_module(f'detect{i+1}',
                             DetectionBlock(in_c + out_c, out_c, **cfg))
 
+        # add CBAM attention module
+        self.cbam_1 = CBAM(int(in_channels[0]))
+        self.cbam_2 = CBAM(int(in_channels[1]))
+        self.cbam_3 = CBAM(int(in_channels[2]))
+
     def forward(self, feats):
         assert len(feats) == self.num_scales
 
         # processed from bottom (high-lvl) to top (low-lvl)
         outs = []
+
+        # adjust cbam
+        feats = list(feats)
+        feats2 = feats[-1]
+        feats[-1] = self.cbam_1(feats2)
+        # adjust cbam
+
         out = self.detect1(feats[-1])
+
         outs.append(out)
+        #
+        # for i, x in enumerate(reversed(feats[:-1])):
+        #     conv = getattr(self, f'conv{i+1}')
+        #     tmp = conv(out)
+        #     # Cat with low-lvl feats
+        #     tmp = F.interpolate(tmp, scale_factor=2)
+        #     tmp = torch.cat((tmp, x), 1)
+        #
+        #     detect = getattr(self, f'detect{i+2}')
+        #     out = detect(tmp)
+        #     outs.append(out)
 
-        for i, x in enumerate(reversed(feats[:-1])):
-            conv = getattr(self, f'conv{i+1}')
-            tmp = conv(out)
+        # assert CBAM module
+        conv1 = getattr(self, f'conv{1}')
+        tmp1 = conv1(out)
 
-            # Cat with low-lvl feats
-            tmp = F.interpolate(tmp, scale_factor=2)
-            tmp = torch.cat((tmp, x), 1)
-
-            detect = getattr(self, f'detect{i+2}')
-            out = detect(tmp)
-            outs.append(out)
+        tmp1 = F.interpolate(tmp1, scale_factor=2)
+        feats1 = feats[1]
+        feats[1] = self.cbam_2(feats1)
+        tmp1 = torch.cat((tmp1, feats[1]), 1)
+        detect2 = getattr(self, f'detect{2}')
+        out1 = detect2(tmp1)
+        outs.append(out1)
+        #
+        #
+        conv2 = getattr(self, f'conv{2}')
+        tmp2 = conv2(out1)
+        tmp2 = F.interpolate(tmp2, scale_factor=2)
+        feats0 = feats[0]
+        feats[0] = self.cbam_3(feats0)
+        tmp2 = torch.cat((tmp2, feats[0]), 1)
+        detect3 = getattr(self, f'detect{3}')
+        out2 = detect3(tmp2)
+        outs.append(out2)
 
         return tuple(outs)

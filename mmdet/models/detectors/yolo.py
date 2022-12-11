@@ -3,11 +3,11 @@
 import torch
 
 from ..builder import DETECTORS
-from .single_stage import SingleStageDetector
-
+# from .single_stage import SingleStageDetector
+from .single_stage_heatmap import SingleStageDetectorHp
 
 @DETECTORS.register_module()
-class YOLOV3(SingleStageDetector):
+class YOLOV3(SingleStageDetectorHp):
 
     def __init__(self,
                  backbone,

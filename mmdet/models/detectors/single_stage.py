@@ -45,6 +45,7 @@ class SingleStageDetector(BaseDetector):
             x = self.neck(x)
         return x
 
+
     def forward_dummy(self, img):
         """Used for computing network flops.
 
